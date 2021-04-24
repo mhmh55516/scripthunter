@@ -106,7 +106,7 @@ cat $TMPDIR/jsdirs.txt | sort -u | while read jsdir; do
         echo "[*] Running FFUF on $jsdir/"
     fi
     # for more thorough, add .min.js,.common.js,.built.js,.chunk.js,.bundled.js,...
-    ffuf -w $wordlist -u $jsdir/FUZZ -e .js,.min.js -mc 200,304 -o $TMPDIR/ffuf.json -s -t 100 > /dev/null
+    ffuf -w $wordlist -u $jsdir/FUZZ -e .js,.min.js -mc 200,304 -o $TMPDIR/ffuf.json -s -t 100
     cat $TMPDIR/ffuf.json | jq -r ".results[].url" | grep "\.js" | unfurl format "%s://%d%:%P%p" | grep -iE "\.js$" | sort -u >$TMPDIR/ffuf_tmp.txt
     cat $TMPDIR/ffuf_tmp.txt >> $TMPDIR/ffuf.txt
     ffuftmpcount="$(wc -l $TMPDIR/ffuf_tmp.txt | sed -e 's/^[[:space:]]*//' | cut -d " " -f 1)"
